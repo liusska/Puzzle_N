@@ -1,31 +1,17 @@
-from boards import Board
+from puzzleN.boards import Board
 from puzzleN.game import Game
 
 
 def main():
-    board = Board(2)
-    board.shuffle_board()
     game = Game()
+    board = Board(4)
+    board.shuffle_board()
+    # board.create_board_for_test()
+
     print(board)
 
-    while True:
-        print('Enter move: ')
-        direction = input().split()
-        for action in direction:
-            if action == 'w':
-                board.move_up()
-            elif action == 's':
-                board.move_down()
-            elif action == 'a':
-                board.move_left()
-            elif action == 'd':
-                board.move_right()
-
-        print(board)
-
-        if game.check_is_the_puzzle_solved(board.board):
-            print("*** The puzzle is SOLVED! ***")
-            break
+    while not game.check_if_the_puzzle_is_solved(board.board):
+        game.solve_the_puzzle(board, game)
 
 
 if __name__ == '__main__':

@@ -3,9 +3,12 @@ import inspect
 
 
 class Board:
+    """
+    This class controls the puzzle board and the operations related with the board.
+    """
     EMPTY_CELL = ' '
     START_NUMBER = 0
-    SHUFFLE_COUNT = 1000
+    SHUFFLE_COUNT = 100
 
     def __init__(self, side):
         self.side = side
@@ -15,9 +18,20 @@ class Board:
                                in inspect.getmembers(self, predicate=inspect.ismethod)
                                if method_name.startswith('move_')]
 
+    def create_board_for_test(self):
+        """
+        Initialize a board with 3 moves left for puzzle solved state for quick tests:
+        1.move: down
+        2.move: right
+        3.move: right
+        """
+        self.board = [[1, 2, 3, 4], [5, 6, 7, 8], [9, ' ', 11, 12], [13, 10, 14, 15]]
+        return self.board
+
     def number_generator(self):
         """
-        Generate numbers, in range (1, side * side)
+        Generate numbers, in range (1, side * side) that will be set to the
+        board initialization.
         """
         self.START_NUMBER += 1
         return self.START_NUMBER
@@ -45,7 +59,7 @@ class Board:
 
     def shuffle_board(self):
         """
-         Mix the board cells with random chosen move from list with all possible moves.
+         Mix the board cells with random chosen move from list with all type of moves.
          The operation repeats SHUFFLE_COUNT times.
         """
         for _ in range(self.SHUFFLE_COUNT):
@@ -69,6 +83,7 @@ class Board:
     def abstract_move(self, delta_row, delta_col):
         """
         Make the user move based on the given coordinates if they are valid.
+        Swap the element and the EMPTY CELL after validation.
         """
         row, col = self.find_target_cell()
         valid_coordinates = self.is_valid_move(row + delta_row, col + delta_col)
@@ -78,25 +93,25 @@ class Board:
 
     def move_left(self):
         """
-        Call the abstract_move func with correct for the move left coordinates.
+        Call the abstract_move func with correct for the left move coordinates.
         """
         self.abstract_move(0, -1)
 
     def move_right(self):
         """
-        Call the abstract_move func with correct for the move right coordinates.
+        Call the abstract_move func with correct for right the move coordinates.
         """
         self.abstract_move(0, +1)
 
     def move_up(self):
         """
-        Call the abstract_move func with correct for the move up coordinates.
+        Call the abstract_move func with correct for the up move coordinates.
         """
         self.abstract_move(-1, 0)
 
     def move_down(self):
         """
-        Call the abstract_move func with correct for the move down coordinates.
+        Call the abstract_move func with correct for the down move coordinates.
         """
         self.abstract_move(+1, 0)
 
@@ -111,7 +126,8 @@ class Board:
 
     def __str__(self):
         """
-        Returns a string representation of the board in understandable for the user type.
+        Returns a string representation of the board state in understandable
+        for player form.
         """
         result = ''
         for row in range(self.side):

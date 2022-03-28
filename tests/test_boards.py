@@ -1,5 +1,5 @@
 import unittest
-from boards import Board
+from puzzleN.boards import Board
 
 
 class BoardTests(unittest.TestCase):
@@ -18,9 +18,9 @@ class BoardTests(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_shuffle_board(self):
-        array_initialize = self.game_board.board
+        array_initialize_sorted = self.game_board.board
         array_after_shuffle = self.game_board.shuffle_board()
-        self.assertNotEqual(array_initialize, array_after_shuffle)
+        self.assertNotEqual(array_initialize_sorted, array_after_shuffle)
 
     def test_is_finding_target_cell_correctly(self):
         actual_coordinates = (
@@ -40,7 +40,7 @@ class BoardTests(unittest.TestCase):
         self.assertEqual(False, self.game_board.is_valid_move(4, 4))
         self.assertEqual(False, self.game_board.is_valid_move(1, 4))
 
-    def test_move_left_empty_cell_correctly(self):
+    def test_move_left_hte_empty_cell_correctly(self):
         row, col = self.game_board.find_target_cell()
         self.game_board.move_left()
         new_row, new_col = self.game_board.find_target_cell()
