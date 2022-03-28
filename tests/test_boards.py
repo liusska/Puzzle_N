@@ -1,5 +1,5 @@
 import unittest
-from puzzleN.boards import Board
+from boards import Board
 
 
 class BoardTests(unittest.TestCase):
@@ -16,6 +16,11 @@ class BoardTests(unittest.TestCase):
         expected = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, ' ']]
         actual = self.game_board.board
         self.assertEqual(expected, actual)
+
+    def test_shuffle_board(self):
+        array_initialize = self.game_board.board
+        array_after_shuffle = self.game_board.shuffle_board()
+        self.assertNotEqual(array_initialize, array_after_shuffle)
 
     def test_is_finding_target_cell_correctly(self):
         actual_coordinates = (

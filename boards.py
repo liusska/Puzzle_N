@@ -79,6 +79,15 @@ class Board:
         for _ in range(self.SHUFFLE_COUNT):
             random.choice(self.possible_moves)()
 
+    def check_is_the_puzzle_solved(self, board):
+        solved_board = Board(self.side).board
+        current_board_state = board.board
+        for row in range(self.side):
+            for col in range(self.side):
+                if not current_board_state[row][col] == solved_board[row][col]:
+                    return False
+        return True
+
     def __str__(self):
         result = ''
         for row in range(self.side):

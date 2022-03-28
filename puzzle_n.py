@@ -3,17 +3,6 @@ import random
 from boards import Board
 
 
-class Game:
-    def __init__(self, board):
-        self.board = board
-
-    def move_target_cell(self, direction):
-        pass
-
-    def check_is_the_puzzle_solved(self):
-        pass
-
-
 def main():
     board = Board(4)
     board.shuffle_board()
@@ -33,9 +22,10 @@ def main():
                 board.move_right()
 
         print(board)
+        if board.check_is_the_puzzle_solved(board):
+            print("The puzzle is solved!")
+            break
 
 
 if __name__ == '__main__':
     main()
-
-
