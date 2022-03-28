@@ -16,15 +16,25 @@ class Board:
                                if method_name.startswith('move_')]
 
     def number_generator(self):
+        """
+        Generate numbers, in range (1, side * side)
+        """
         self.START_NUMBER += 1
         return self.START_NUMBER
 
     def initialize_sorted_board(self):
+        """
+        Initialize sorted started state of the game board.
+        Set the last cell of the board to an EMPTY CELL
+        """
         board = self.generate_board()
         board[self.side-1][self.side-1] = self.EMPTY_CELL
         return board
 
     def generate_board(self):
+        """
+        Returns the board cells in nested array with dimensions side * side.
+        """
         board = []
         for r in range(self.side):
             row = []
@@ -33,62 +43,76 @@ class Board:
             board.append(row)
         return board
 
+    def shuffle_board(self):
+        """
+         Mix the board cells with random chosen move from list with all possible moves.
+         The operation repeats SHUFFLE_COUNT times.
+        """
+        for _ in range(self.SHUFFLE_COUNT):
+            random.choice(self.possible_moves)()
+
     def find_target_cell(self):
+        """
+        Search cell by cell for the EMPTY_CELL which is the target cell.
+        """
         for r in range(len(self.board)):
             for c in range(len(self.board)):
                 if self.board[r][c] == self.EMPTY_CELL:
                     return r, c
 
     def is_valid_move(self, row, col):
+        """
+        Returns True if the coordinates of the current move are in the board range.
+        """
         return 0 <= row < self.side and 0 <= col < self.side
 
-    def move_left(self):
+    def abstract_move(self, delta_row, delta_col):
+        """
+        Make the user move based on the given coordinates if they are valid.
+        """
         row, col = self.find_target_cell()
-        valid_coordinates = self.is_valid_move(row, col - 1)
+        valid_coordinates = self.is_valid_move(row + delta_row, col + delta_col)
         if valid_coordinates:
-            element = self.make_move(row, col - 1)
+            element = self.make_move(row + delta_row, col + delta_col)
             self.board[row][col] = element
+
+    def move_left(self):
+        """
+        Call the abstract_move func with correct for the move left coordinates.
+        """
+        self.abstract_move(0, -1)
 
     def move_right(self):
-        row, col = self.find_target_cell()
-        valid_coordinates = self.is_valid_move(row, col + 1)
-        if valid_coordinates:
-            element = self.make_move(row, col + 1)
-            self.board[row][col] = element
+        """
+        Call the abstract_move func with correct for the move right coordinates.
+        """
+        self.abstract_move(0, +1)
 
     def move_up(self):
-        row, col = self.find_target_cell()
-        valid_coordinates = self.is_valid_move(row - 1, col)
-        if valid_coordinates:
-            element = self.make_move(row - 1, col)
-            self.board[row][col] = element
+        """
+        Call the abstract_move func with correct for the move up coordinates.
+        """
+        self.abstract_move(-1, 0)
 
     def move_down(self):
-        row, col = self.find_target_cell()
-        valid_coordinates = self.is_valid_move(row + 1, col)
-        if valid_coordinates:
-            element = self.make_move(row + 1, col)
-            self.board[row][col] = element
+        """
+        Call the abstract_move func with correct for the move down coordinates.
+        """
+        self.abstract_move(+1, 0)
 
     def make_move(self, target_row, target_col):
+        """
+        Set the new cell with EMPTY_CELL
+        Returns the previous element.
+        """
         element = self.board[target_row][target_col]
         self.board[target_row][target_col] = self.EMPTY_CELL
         return element
 
-    def shuffle_board(self):
-        for _ in range(self.SHUFFLE_COUNT):
-            random.choice(self.possible_moves)()
-
-    def check_is_the_puzzle_solved(self, board):
-        solved_board = Board(self.side).board
-        current_board_state = board.board
-        for row in range(self.side):
-            for col in range(self.side):
-                if not current_board_state[row][col] == solved_board[row][col]:
-                    return False
-        return True
-
     def __str__(self):
+        """
+        Returns a string representation of the board in understandable for the user type.
+        """
         result = ''
         for row in range(self.side):
             for col in range(self.side):

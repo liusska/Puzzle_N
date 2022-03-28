@@ -1,11 +1,11 @@
-import random
-
 from boards import Board
+from puzzleN.game import Game
 
 
 def main():
-    board = Board(4)
+    board = Board(2)
     board.shuffle_board()
+    game = Game()
     print(board)
 
     while True:
@@ -22,8 +22,9 @@ def main():
                 board.move_right()
 
         print(board)
-        if board.check_is_the_puzzle_solved(board):
-            print("The puzzle is solved!")
+
+        if game.check_is_the_puzzle_solved(board.board):
+            print("*** The puzzle is SOLVED! ***")
             break
 
 
