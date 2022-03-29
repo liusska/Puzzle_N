@@ -1,3 +1,4 @@
+import copy
 import random
 import inspect
 
@@ -14,18 +15,21 @@ class Board:
         self.side = side
         self.fields_count = side * side
         self.board = self.initialize_sorted_board()
+        self.winning_board = copy.deepcopy(self.board)
         self.possible_moves = [method for method_name, method
                                in inspect.getmembers(self, predicate=inspect.ismethod)
                                if method_name.startswith('move_')]
 
-    def create_board_for_test(self):
+    def create_board_for_test(self, new_state):
         """
-        Initialize a board with 3 moves left for puzzle solved state for quick tests:
-        1.move: down
-        2.move: right
-        3.move: right
+        Set a board 4x4 with 3 moves left for puzzle solved state:
+        The steps for win are:
+            1.move: down
+            2.move: right
+            3.move: right
+        This is used for quick puzzle tests.
         """
-        self.board = [[1, 2, 3, 4], [5, 6, 7, 8], [9, ' ', 11, 12], [13, 10, 14, 15]]
+        self.board = new_state
         return self.board
 
     def number_generator(self):
@@ -99,7 +103,7 @@ class Board:
 
     def move_right(self):
         """
-        Call the abstract_move func with correct for right the move coordinates.
+        Call the abstract_move func with correct for the right move coordinates.
         """
         self.abstract_move(0, +1)
 
@@ -117,7 +121,7 @@ class Board:
 
     def make_move(self, target_row, target_col):
         """
-        Set the new cell with EMPTY_CELL
+        Set the new cell with EMPTY_CELL value.
         Returns the previous element.
         """
         element = self.board[target_row][target_col]
