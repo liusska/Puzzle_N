@@ -9,7 +9,7 @@ class Board:
     """
     EMPTY_CELL = ' '
     START_NUMBER = 0
-    SHUFFLE_COUNT = 100
+    SHUFFLE_COUNT = 1000
 
     def __init__(self, side):
         self.side = side
@@ -29,7 +29,7 @@ class Board:
             3.move: right
         This is used for quick puzzle tests.
         """
-        self.board = new_state
+        self.board = copy.deepcopy(new_state)
         return self.board
 
     def number_generator(self):

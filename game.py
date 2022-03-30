@@ -2,8 +2,6 @@ from puzzleN.boards import Board
 
 
 class Game:
-    BOARD_FOR_TEST = [[1, 2, 3, 4], [5, 6, 7, 8], [9, ' ', 11, 12], [13, 10, 14, 15]]
-
     """
     This class controls the user moves in the current game.
     """
@@ -15,8 +13,6 @@ class Game:
         """
         board = Board(4)
         board.shuffle_board()
-        # board.create_board_for_test(self.BOARD_FOR_TEST)
-
         print(board)
 
         while not self.check_if_the_puzzle_is_solved(board.board):
