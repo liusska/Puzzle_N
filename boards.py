@@ -69,13 +69,13 @@ class Board:
         for _ in range(self.SHUFFLE_COUNT):
             random.choice(self.possible_moves)()
 
-    def find_target_cell(self):
+    def find_target_cell(self, searched_value, board):
         """
         Search cell by cell for the EMPTY_CELL which is the target cell.
         """
         for r in range(len(self.board)):
             for c in range(len(self.board)):
-                if self.board[r][c] == self.EMPTY_CELL:
+                if board[r][c] == searched_value:
                     return r, c
 
     def is_valid_move(self, row, col):
@@ -89,7 +89,7 @@ class Board:
         Make the user move based on the given coordinates if they are valid.
         Swap the element and the EMPTY CELL after validation.
         """
-        row, col = self.find_target_cell()
+        row, col = self.find_target_cell(self.EMPTY_CELL, self.board)
         valid_coordinates = self.is_valid_move(row + delta_row, col + delta_col)
         if valid_coordinates:
             element = self.make_move(row + delta_row, col + delta_col)

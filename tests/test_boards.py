@@ -27,7 +27,7 @@ class BoardTests(unittest.TestCase):
             len(self.game_board.initialize_sorted_board()) - 1,
             len(self.game_board.initialize_sorted_board()) - 1
         )
-        expected_coordinates = self.game_board.find_target_cell()
+        expected_coordinates = self.game_board.find_target_cell(self.game_board.EMPTY_CELL, self.game_board.board)
         self.assertEqual(actual_coordinates, expected_coordinates)
 
     def test_is_valid_move_with_correct_coordinates_returns_true(self):
@@ -41,36 +41,36 @@ class BoardTests(unittest.TestCase):
         self.assertEqual(False, self.game_board.is_valid_move(1, 4))
 
     def test_move_left_hte_empty_cell_correctly(self):
-        row, col = self.game_board.find_target_cell()
+        row, col = self.game_board.find_target_cell(self.game_board.EMPTY_CELL, self.game_board.board)
         self.game_board.move_left()
-        new_row, new_col = self.game_board.find_target_cell()
+        new_row, new_col = self.game_board.find_target_cell(self.game_board.EMPTY_CELL, self.game_board.board)
         self.assertEqual((row, col-1), (new_row, new_col))
 
     def test_move_right_empty_cell_correctly(self):
-        row, col = self.game_board.find_target_cell()
+        row, col = self.game_board.find_target_cell(self.game_board.EMPTY_CELL, self.game_board.board)
         self.game_board.move_left()
         self.game_board.move_left()
         self.game_board.move_left()
         self.game_board.move_up()
         self.game_board.move_right()
-        new_row, new_col = self.game_board.find_target_cell()
+        new_row, new_col = self.game_board.find_target_cell(self.game_board.EMPTY_CELL, self.game_board.board)
         self.assertEqual((row-1, col-2), (new_row, new_col))
 
     def test_move_up_empty_cell_correctly(self):
-        row, col = self.game_board.find_target_cell()
+        row, col = self.game_board.find_target_cell(self.game_board.EMPTY_CELL, self.game_board.board)
         self.game_board.move_up()
-        new_row, new_col = self.game_board.find_target_cell()
+        new_row, new_col = self.game_board.find_target_cell(self.game_board.EMPTY_CELL, self.game_board.board)
         self.assertEqual((row-1, col), (new_row, new_col))
 
     def test_move_down_empty_cell_correctly(self):
-        row, col = self.game_board.find_target_cell()
+        row, col = self.game_board.find_target_cell(self.game_board.EMPTY_CELL, self.game_board.board)
         self.game_board.move_up()
         self.game_board.move_up()
         self.game_board.move_up()
         self.game_board.move_left()
         self.game_board.move_down()
 
-        new_row, new_col = self.game_board.find_target_cell()
+        new_row, new_col = self.game_board.find_target_cell(self.game_board.EMPTY_CELL, self.game_board.board)
         self.assertEqual((row - 2, col - 1), (new_row, new_col))
 
     def test_make_move_returns_correct_element(self):

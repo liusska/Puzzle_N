@@ -1,4 +1,5 @@
 from puzzleN.boards import Board
+import ai_game
 
 
 class Game:
@@ -6,15 +7,49 @@ class Game:
     This class controls the user moves in the current game.
     """
 
-    def play(self):
+    @staticmethod
+    def set_new_game():
         """
         Set a new board for the puzzle game.
-        Controls the moves until the puzzle is solved.
         """
         board = Board(4)
         board.shuffle_board()
         print(board)
 
+        return board
+
+    # TODO:
+    #  Make the moves while WHEN?
+    #  Stop move if the value is in the correct row
+    #  Check if the value is on the correct row. Move like is first row!
+    #  Move the value on left correct position or right correct position?
+
+    def ai_play(self, board):
+        while not self.check_if_the_puzzle_is_solved(board.board):
+            while True:
+                current_unordered_value = ai_game.find_next_unordered_value(board.board, board.winning_board)
+
+                value_cell_coordinates = board.find_target_cell(current_unordered_value, board.board)
+                empty_cell_coordinates = board.find_target_cell(board.EMPTY_CELL, board.board)
+                correct_cell_coordinates = board.find_target_cell(current_unordered_value, board.winning_board)
+
+                ai_game.ai_moves_control(
+                    board,
+                    current_unordered_value,
+                    value_cell_coordinates,
+                    empty_cell_coordinates,
+                    correct_cell_coordinates
+                )
+                value_cell_coordinates = board.find_target_cell(current_unordered_value, board.board)
+
+                if value_cell_coordinates == correct_cell_coordinates:
+                    break
+            print(board)
+
+    def user_play(self, board):
+        """
+        Controls the user moves until the puzzle is solved.
+        """
         while not self.check_if_the_puzzle_is_solved(board.board):
             self.solve_the_puzzle_step(board)
 
@@ -55,4 +90,3 @@ class Game:
             print("*** The puzzle is SOLVED! ***")
             return True
         return False
-
