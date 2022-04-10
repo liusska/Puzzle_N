@@ -18,12 +18,11 @@ def ai_moves_control(board, value_to_order, value_cell_coordinates, empty_cell_c
 
     # Last two columns play
     elif correct_col in range(board.side - 2, board.side):
+
         print("Last 2 columns play")
-        exit()
         last_two_columns_play(
             board,
             value_to_order,
-            value_cell_coordinates,
             empty_cell_coordinates,
             correct_cell_coordinates
         )
@@ -36,12 +35,10 @@ def ai_moves_control(board, value_to_order, value_cell_coordinates, empty_cell_c
             move_element_from_last_column(
                 board,
                 value_cell_coordinates,
-                empty_cell_coordinates,
-                correct_cell_coordinates
+                empty_cell_coordinates
             )
 
         # If the element is in the first unordered row
-
         value_cell_coordinates = board.find_target_cell(value_to_order, board.board)
         value_row, value_col = value_cell_coordinates
         empty_cell_coordinates = board.find_target_cell(board.EMPTY_CELL, board.board)
@@ -93,25 +90,22 @@ def swap_cells_to_up_from_right_with_moves_from_right_up_left_down(board):
     board.move_down()
 
 
-def move_element_from_last_column(board, value_cell, empty_cell, correct_cell):
-    # when the element is swapped to the correct row call first_row func
-
+def move_element_from_last_column(board, value_cell, empty_cell):
     value_row, value_col = value_cell
     empty_row, empty_col = empty_cell
 
     if empty_row == value_row:
-
         while not empty_col == value_col:
             board.move_right()
             empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
             # '1' '0'
 
     elif empty_row < value_row:
-
         if empty_col == value_col:
             while not empty_row == value_row:
                 board.move_down()
                 empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
+
             board.move_left()
             board.move_up()
             board.move_right()
@@ -121,6 +115,7 @@ def move_element_from_last_column(board, value_cell, empty_cell, correct_cell):
             while not empty_row == value_row:
                 board.move_down()
                 empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
+
             while not empty_col == value_col:
                 board.move_right()
                 empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
@@ -131,9 +126,11 @@ def move_element_from_last_column(board, value_cell, empty_cell, correct_cell):
             while not empty_col == value_col:
                 board.move_right()
                 empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
+
             while not empty_row == value_row + 1:
                 board.move_up()
                 empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
+
             board.move_left()
             board.move_up()
             board.move_right()
@@ -143,6 +140,7 @@ def move_element_from_last_column(board, value_cell, empty_cell, correct_cell):
             while not empty_row == value_row + 1:
                 board.move_up()
                 empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
+
             board.move_right()
             board.move_up()
             board.move_right()
@@ -196,6 +194,13 @@ def set_the_empty_cell_right_to_the_target_value(board, value_cell, empty_cell):
 
     elif empty_row < value_row:
         if empty_col == value_col:
+            # while not empty_row == value_row - 1:
+            #     board.move_down()
+            #     empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
+            # board.move_left()
+            # board.move_down()
+            # board.move_right()
+            # empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
             board.move_right()
             empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
             while not empty_row == value_row:
@@ -204,12 +209,15 @@ def set_the_empty_cell_right_to_the_target_value(board, value_cell, empty_cell):
             # '1' '0'
 
         elif empty_col < value_col:
-            while not empty_col == value_col + 1:
+            while not empty_col == value_col:
                 board.move_right()
                 empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
-            while not empty_row == value_row:
+            while not empty_row == value_row - 1:
                 board.move_down()
                 empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
+            board.move_left()
+            board.move_down()
+            board.move_right()
             # '1' '0'
 
         elif empty_col > value_col:
@@ -222,13 +230,28 @@ def set_the_empty_cell_right_to_the_target_value(board, value_cell, empty_cell):
             # '1' '0'
 
 
+def swap_cells_to_right_from_down_with_moves_from_right_left_down_right_up(board):
+    board.move_left()
+    board.move_down()
+    board.move_right()
+    board.move_right()
+    board.move_up()
+
+
 def move_element_on_same_row(board, target_value, value_cell, empty_cell, correct_cell):
     set_the_empty_cell_right_to_the_target_value(board, value_cell, empty_cell)
     value_cell = board.find_target_cell(target_value, board.board)
-
+    empty_cell = board.find_target_cell(board.EMPTY_CELL, board.board)
     while not value_cell == correct_cell:
-        swap_cells_to_left_from_down_with_moves_from_right_down_left_up_right(board)
+        if value_cell[1] < correct_cell[1]:
+            swap_cells_to_right_from_down_with_moves_from_right_left_down_right_up(board)
+
+        else:
+            swap_cells_to_left_from_down_with_moves_from_right_down_left_up_right(board)
+
         value_cell = board.find_target_cell(target_value, board.board)
+        empty_cell = board.find_target_cell(board.EMPTY_CELL, board.board)
+        set_the_empty_cell_right_to_the_target_value(board, value_cell, empty_cell)
 
 
 def standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(
@@ -242,11 +265,9 @@ def standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(
 
     correct_row, correct_col = correct_cell_coordinates
     value_row, value_col = value_cell_coordinates
-    # TODO: not always in
     set_the_empty_cell_right_to_the_target_value(board, value_cell_coordinates, empty_cell_coordinates)
 
     if value_row > correct_row:
-        # WORKS!!!!!!!!
         if value_col == correct_col:
             while not value_row == correct_row:
                 swap_cells_to_up_from_right_with_moves_from_right_up_left_down(board)
@@ -256,7 +277,6 @@ def standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(
                     board.move_right()
                     board.move_up()
 
-        # TODO: test case
         elif value_col < correct_col:
             while not value_row == correct_row + 1:
                 swap_cells_to_up_from_right_with_moves_from_right_up_left_down(board)
@@ -268,13 +288,10 @@ def standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(
             while not value_col == correct_col:
                 board.move_left()
                 swap_cells_to_right_from_down_with_moves_from_left_down_right_up_left(board)
-                empty_cell_coordinates = board.find_target_cell(board.EMPTY_CELL, board.board)
                 value_cell_coordinates = board.find_target_cell(value, board.board)
-                # set_the_empty_cell_right_to_the_target_value(board, value_cell_coordinates, empty_cell_coordinates)
 
                 value_row, value_col = value_cell_coordinates
 
-        # TODO: test!!!!
         elif value_col > correct_col:
             while not value_row == correct_row:
                 value_cell_coordinates = board.find_target_cell(value, board.board)
@@ -305,42 +322,74 @@ def standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(
             move_element_on_same_row(board, value, value_cell_coordinates, empty_cell_coordinates, correct_cell_coordinates)
 
 
-# TODO: Func for empty cell move to the last column in the correct row.
-#  another func for specific move
-def last_two_columns_play(board, target_value, value_cell, empty_cell, correct_cell):
+def last_two_columns_play(board, target_value, empty_cell, correct_cell):
+    last_columns_move_for_next_value(board, target_value, empty_cell, correct_cell)
 
+    last_columns_move_for_current_value(board, target_value, correct_cell)
+
+
+def last_columns_move_for_next_value(board, target_value, empty_cell, correct_cell):
     next_value = target_value + 1
     next_value_coordinates = board.find_target_cell(next_value, board.board)
-    next_value_row, next_value_col = next_value_coordinates
     correct_row, correct_col = correct_cell
+    empty_cell = board.find_target_cell(board.EMPTY_CELL, board.board)
+    set_the_empty_cell_right_to_the_target_value(board, next_value_coordinates, empty_cell)
+
+    if correct_col == board.side - 1:
+        move_element_from_last_column(board, next_value_coordinates, empty_cell)
+
+    next_value_coordinates = board.find_target_cell(next_value, board.board)
 
     while next_value_coordinates != correct_cell:
-        if next_value_col == board.side - 1:
-            move_element_from_last_column(board, next_value_coordinates, empty_cell, correct_cell)
-
-        elif next_value_row == correct_row:
-            first_row_play(board, current_value, value_cell, empty_cell, correct_cell)
-
-        else:
-            standard_cells_play(board, next_value, value_cell, empty_cell, correct_cell)
-
-        next_value_coordinates = board.find_target_cell(next_value, board.board)
+        next_value_row, next_value_col = next_value_coordinates
         empty_cell = board.find_target_cell(board.EMPTY_CELL, board.board)
 
-    target_value_coordinates = board.find_target_cell(target_value, board.board)
-    #
-    # while target_value_coordinates != (next_value_row + 1, next_value_col):
-    #     if next_value_col == board.side - 1:
-    #         move_element_from_last_column(board, target_value, empty_cell, correct_cell)
-    #
-    #     elif next_value_row == correct_row:
-    #         first_row_play(board, target_value, value_cell, empty_cell, correct_cell)
-    #
-    #     else:
-    #         standard_cells_play(board, target_value, value_cell, empty_cell, (next_value_col + 1, next_value_row))
-    #         empty_cell = board.find_target_cell(board.EMPTY_CELL, board.board)
-    #
-    # target_value_coordinates = board.find_target_cell(target_value, board.board)
+        if next_value_row == correct_row:
+            move_element_on_same_row(board, next_value, next_value_coordinates, empty_cell, correct_cell)
 
-    print("Last 2 columns game board.................")
+        else:
+            standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(board, next_value,
+                                                                                 next_value_coordinates, empty_cell,
+                                                                                 correct_cell)
+
+        next_value_coordinates = board.find_target_cell(next_value, board.board)
+    print(board)
+
+
+def last_columns_move_for_current_value(board, target_value, correct_cell):
+    current_target_coordinates = board.find_target_cell(target_value, board.board)
+    current_target_row, current_target_col = current_target_coordinates
+
+    correct_cell = ((correct_cell[0] + 1), correct_cell[1])
+    correct_row, correct_col = correct_cell
+    empty_cell = board.find_target_cell(board.EMPTY_CELL, board.board)
+    set_the_empty_cell_right_to_the_target_value(board, current_target_coordinates, empty_cell)
+
+    if current_target_col == board.side - 1:
+        move_element_from_last_column(board, current_target_coordinates, empty_cell)
+
+    empty_cell = board.find_target_cell(board.EMPTY_CELL, board.board)
+    target_value_coordinates = board.find_target_cell(target_value, board.board)
+    set_the_empty_cell_right_to_the_target_value(board, target_value_coordinates, empty_cell)
+
+    target_value_coordinates = board.find_target_cell(target_value, board.board)
+    current_target_row, current_target_col = target_value_coordinates
+
+    while target_value_coordinates != correct_cell:
+        if current_target_row == correct_row:
+            move_element_on_same_row(board, target_value, target_value_coordinates, empty_cell, correct_cell)
+        else:
+            standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(board, target_value,
+                                                                                 target_value_coordinates,
+                                                                                 empty_cell,
+                                                                                 correct_cell)
+        empty_cell = board.find_target_cell(board.EMPTY_CELL, board.board)
+        target_value_coordinates = board.find_target_cell(target_value, board.board)
+        current_target_row, current_target_col = target_value_coordinates
+
+    set_the_empty_cell_right_to_the_target_value(board, target_value_coordinates, empty_cell)
+    board.move_up()
+    board.move_left()
+    board.move_down()
+
     print(board)
