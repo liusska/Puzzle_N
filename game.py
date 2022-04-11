@@ -18,12 +18,6 @@ class Game:
 
         return board
 
-    # TODO:
-    #  Make the moves while WHEN?
-    #  Stop move if the value is in the correct row
-    #  Check if the value is on the correct row. Move like is first row!
-    #  Move the value on left correct position or right correct position?
-
     def ai_play(self, board):
         while not self.check_if_the_puzzle_is_solved(board.board):
             while True:

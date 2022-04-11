@@ -10,20 +10,16 @@ def ai_moves_control(board, value_to_order, value_cell_coordinates, empty_cell_c
     correct_row, correct_col = correct_cell_coordinates
     value_row, value_col = value_cell_coordinates
 
-    # Last two rows play
+    # Last two rows moves
     if correct_row in range(board.side - 2, board.side):
-        print("Last 2 rows play")
+        print("Last 2 rows moves")
         exit()
-        pass
 
-    # Last two columns play
+    # Last two columns moves
     elif correct_col in range(board.side - 2, board.side):
-
-        print("Last 2 columns play")
-        last_two_columns_play(
+        make_last_two_columns_moves(
             board,
             value_to_order,
-            empty_cell_coordinates,
             correct_cell_coordinates
         )
 
@@ -64,8 +60,36 @@ def ai_moves_control(board, value_to_order, value_cell_coordinates, empty_cell_c
             value_cell_coordinates = board.find_target_cell(value_to_order, board.board)
 
         break
-    # Stop when?
     return
+
+
+def set_last_column_specific_case(board):
+    board.move_down()
+    board.move_right()
+    board.move_up()
+    board.move_left()
+    board.move_up()
+    board.move_right()
+    board.move_down()
+    board.move_down()
+    board.move_left()
+    board.move_up()
+    board.move_right()
+    board.move_up()
+    board.move_left()
+    board.move_down()
+    board.move_down()
+    board.move_right()
+    board.move_up()
+    board.move_up()
+    board.move_left()
+    board.move_down()
+
+
+def set_last_two_columns_elements(board):
+    board.move_up()
+    board.move_left()
+    board.move_down()
 
 
 def swap_cells_to_right_from_down_with_moves_from_left_down_right_up_left(board):
@@ -88,6 +112,14 @@ def swap_cells_to_up_from_right_with_moves_from_right_up_left_down(board):
     board.move_up()
     board.move_left()
     board.move_down()
+
+
+def swap_cells_to_right_from_down_with_moves_from_right_left_down_right_up(board):
+    board.move_left()
+    board.move_down()
+    board.move_right()
+    board.move_right()
+    board.move_up()
 
 
 def move_element_from_last_column(board, value_cell, empty_cell):
@@ -194,18 +226,19 @@ def set_the_empty_cell_right_to_the_target_value(board, value_cell, empty_cell):
 
     elif empty_row < value_row:
         if empty_col == value_col:
-            # while not empty_row == value_row - 1:
-            #     board.move_down()
-            #     empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
-            # board.move_left()
-            # board.move_down()
-            # board.move_right()
-            # empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
-            board.move_right()
-            empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
-            while not empty_row == value_row:
-                board.move_down()
+            if empty_col < board.side - 1:
+                board.move_right()
                 empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
+                while not empty_row == value_row:
+                    board.move_down()
+                    empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
+            else:
+                while not empty_row == value_row - 1:
+                    board.move_down()
+                    empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
+                board.move_left()
+                board.move_down()
+                board.move_right()
             # '1' '0'
 
         elif empty_col < value_col:
@@ -230,18 +263,9 @@ def set_the_empty_cell_right_to_the_target_value(board, value_cell, empty_cell):
             # '1' '0'
 
 
-def swap_cells_to_right_from_down_with_moves_from_right_left_down_right_up(board):
-    board.move_left()
-    board.move_down()
-    board.move_right()
-    board.move_right()
-    board.move_up()
-
-
 def move_element_on_same_row(board, target_value, value_cell, empty_cell, correct_cell):
     set_the_empty_cell_right_to_the_target_value(board, value_cell, empty_cell)
     value_cell = board.find_target_cell(target_value, board.board)
-    empty_cell = board.find_target_cell(board.EMPTY_CELL, board.board)
     while not value_cell == correct_cell:
         if value_cell[1] < correct_cell[1]:
             swap_cells_to_right_from_down_with_moves_from_right_left_down_right_up(board)
@@ -260,8 +284,6 @@ def standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(
         value_cell_coordinates,
         empty_cell_coordinates,
         correct_cell_coordinates):
-
-    # value row cannot be less than correct row!
 
     correct_row, correct_col = correct_cell_coordinates
     value_row, value_col = value_cell_coordinates
@@ -322,13 +344,13 @@ def standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(
             move_element_on_same_row(board, value, value_cell_coordinates, empty_cell_coordinates, correct_cell_coordinates)
 
 
-def last_two_columns_play(board, target_value, empty_cell, correct_cell):
-    last_columns_move_for_next_value(board, target_value, empty_cell, correct_cell)
+def make_last_two_columns_moves(board, target_value, correct_cell):
+    last_columns_move_for_next_value(board, target_value, correct_cell)
 
     last_columns_move_for_current_value(board, target_value, correct_cell)
 
 
-def last_columns_move_for_next_value(board, target_value, empty_cell, correct_cell):
+def last_columns_move_for_next_value(board, target_value, correct_cell):
     next_value = target_value + 1
     next_value_coordinates = board.find_target_cell(next_value, board.board)
     correct_row, correct_col = correct_cell
@@ -337,7 +359,6 @@ def last_columns_move_for_next_value(board, target_value, empty_cell, correct_ce
 
     if correct_col == board.side - 1:
         move_element_from_last_column(board, next_value_coordinates, empty_cell)
-
     next_value_coordinates = board.find_target_cell(next_value, board.board)
 
     while next_value_coordinates != correct_cell:
@@ -348,25 +369,30 @@ def last_columns_move_for_next_value(board, target_value, empty_cell, correct_ce
             move_element_on_same_row(board, next_value, next_value_coordinates, empty_cell, correct_cell)
 
         else:
-            standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(board, next_value,
-                                                                                 next_value_coordinates, empty_cell,
-                                                                                 correct_cell)
+            standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(
+                board,
+                next_value,
+                next_value_coordinates,
+                empty_cell,
+                correct_cell
+            )
 
         next_value_coordinates = board.find_target_cell(next_value, board.board)
     print(board)
 
 
 def last_columns_move_for_current_value(board, target_value, correct_cell):
-    current_target_coordinates = board.find_target_cell(target_value, board.board)
-    current_target_row, current_target_col = current_target_coordinates
+    target_value_coordinates = board.find_target_cell(target_value, board.board)
+    current_target_row, current_target_col = target_value_coordinates
 
     correct_cell = ((correct_cell[0] + 1), correct_cell[1])
     correct_row, correct_col = correct_cell
     empty_cell = board.find_target_cell(board.EMPTY_CELL, board.board)
-    set_the_empty_cell_right_to_the_target_value(board, current_target_coordinates, empty_cell)
+    set_the_empty_cell_right_to_the_target_value(board, target_value_coordinates, empty_cell)
 
     if current_target_col == board.side - 1:
-        move_element_from_last_column(board, current_target_coordinates, empty_cell)
+        target_value_coordinates = board.find_target_cell(target_value, board.board)
+        move_element_from_last_column(board, target_value_coordinates, empty_cell)
 
     empty_cell = board.find_target_cell(board.EMPTY_CELL, board.board)
     target_value_coordinates = board.find_target_cell(target_value, board.board)
@@ -388,8 +414,12 @@ def last_columns_move_for_current_value(board, target_value, correct_cell):
         current_target_row, current_target_col = target_value_coordinates
 
     set_the_empty_cell_right_to_the_target_value(board, target_value_coordinates, empty_cell)
-    board.move_up()
-    board.move_left()
-    board.move_down()
+    set_last_two_columns_elements(board)
 
-    print(board)
+    if board.board[correct_row - 1][correct_col + 1] != board.winning_board[correct_row - 1][correct_col + 1]:
+        set_last_column_specific_case(board)
+
+
+
+
+
