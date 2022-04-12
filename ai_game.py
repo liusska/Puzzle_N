@@ -453,23 +453,27 @@ def last_columns_move_for_current_value(board, target_value, correct_cell):
 
 
 def solve_the_last_two_rows_fo_the_puzzle(board):
-    print("Last 2 rows moves")
     row = board.side - 2
-    col = 0
 
-    value_on_first_row = board.winning_board[row][col]
-    value_on_second_row = board.winning_board[row + 1][col]
+    for r in range(row, board.side-1):
+        for c in range(0, board.side-2):
+            value_on_first_row = board.winning_board[r][c]
+            value_on_second_row = board.winning_board[r + 1][c]
 
-    make_last_two_rows_moves(board, value_on_second_row, (row, col))
-    if board.board[row + 1][col] == value_on_first_row:
-        last_two_rows_specific_case(board)
-    else:
-        make_last_two_rows_moves(board, value_on_first_row, (row, col + 1))
-    swap_last_two_rows_elements_to_correct_places_diff_rows_same_columns(board)
+            make_last_two_rows_moves(board, value_on_second_row, (r, c))
+            if board.board[r + 1][c] == value_on_first_row:
+                last_two_rows_specific_case(board)
+            else:
+                make_last_two_rows_moves(board, value_on_first_row, (r, c + 1))
+            swap_last_two_rows_elements_to_correct_places_diff_rows_same_columns(board)
 
     print(board)
+    board.move_right()
+    board.move_down()
+    if not check_if_the_puzzle_is_solved_except_count_rows(board, 0):
+        board.move_left()
 
-    exit()
+    print(board)
 
 
 def swap_last_two_rows_elements_to_correct_places_diff_rows_same_columns(board):

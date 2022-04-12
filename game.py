@@ -12,7 +12,7 @@ class Game:
         """
         Set a new board for the puzzle game.
         """
-        board = Board(10)
+        board = Board(4)
         board.shuffle_board()
         print(board)
 
