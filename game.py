@@ -12,33 +12,18 @@ class Game:
         """
         Set a new board for the puzzle game.
         """
-        board = Board(4)
+        board = Board(10)
         board.shuffle_board()
         print(board)
 
         return board
 
     def ai_play(self, board):
-        while not self.check_if_the_puzzle_is_solved(board.board):
-            while True:
-                current_unordered_value = ai_game.find_next_unordered_value(board.board, board.winning_board)
-
-                value_cell_coordinates = board.find_target_cell(current_unordered_value, board.board)
-                empty_cell_coordinates = board.find_target_cell(board.EMPTY_CELL, board.board)
-                correct_cell_coordinates = board.find_target_cell(current_unordered_value, board.winning_board)
-
-                ai_game.ai_moves_control(
-                    board,
-                    current_unordered_value,
-                    value_cell_coordinates,
-                    empty_cell_coordinates,
-                    correct_cell_coordinates
-                )
-                value_cell_coordinates = board.find_target_cell(current_unordered_value, board.board)
-
-                if value_cell_coordinates == correct_cell_coordinates:
-                    break
+        while not ai_game.check_if_the_puzzle_is_solved_except_count_rows(board, 2):
+            ai_game.solve_the_puzzle_without_the_last_two_rows(board)
             print(board)
+        while not self.check_if_the_puzzle_is_solved(board.board):
+            ai_game.solve_the_last_two_rows_fo_the_puzzle(board)
 
     def user_play(self, board):
         """

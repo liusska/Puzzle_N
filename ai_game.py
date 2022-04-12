@@ -6,27 +6,43 @@ def find_next_unordered_value(current_board, ordered_board):
     return False
 
 
-def ai_moves_control(board, value_to_order, value_cell_coordinates, empty_cell_coordinates, correct_cell_coordinates):
+def check_if_the_puzzle_is_solved_except_count_rows(board, minus_rows):
+    for row in range(board.side - minus_rows):
+        for col in range(board.side):
+            if board.board[row][col] != board.winning_board[row][col]:
+                return False
+    return True
+
+
+def solve_the_puzzle_without_the_last_two_rows(board):
+    current_unordered_value = find_next_unordered_value(board.board, board.winning_board)
+    value_cell_coordinates = board.find_target_cell(current_unordered_value, board.board)
+    correct_cell_coordinates = board.find_target_cell(current_unordered_value, board.winning_board)
+
+    ai_moves_control(
+        board,
+        current_unordered_value,
+        value_cell_coordinates,
+        correct_cell_coordinates
+    )
+    value_cell_coordinates = board.find_target_cell(current_unordered_value, board.board)
+    if value_cell_coordinates == correct_cell_coordinates:
+        return True
+    return False
+
+
+def ai_moves_control(board, value_to_order, value_cell_coordinates, correct_cell_coordinates):
     correct_row, correct_col = correct_cell_coordinates
     value_row, value_col = value_cell_coordinates
 
-    # Last two rows moves
-    if correct_row in range(board.side - 2, board.side):
-        print("Last 2 rows moves")
-        exit()
-        make_last_two_rows_moves(
-            board,
-            value_to_order,
-            correct_cell_coordinates
-        )
-
     # Last two columns moves
-    elif correct_col in range(board.side - 2, board.side):
+    if correct_col in range(board.side - 2, board.side):
         make_last_two_columns_moves(
             board,
             value_to_order,
             correct_cell_coordinates
         )
+        return
 
     value_cell_coordinates = board.find_target_cell(value_to_order, board.board)
     while value_cell_coordinates != correct_cell_coordinates:
@@ -42,13 +58,11 @@ def ai_moves_control(board, value_to_order, value_cell_coordinates, empty_cell_c
         # If the element is in the first unordered row
         value_cell_coordinates = board.find_target_cell(value_to_order, board.board)
         value_row, value_col = value_cell_coordinates
-        empty_cell_coordinates = board.find_target_cell(board.EMPTY_CELL, board.board)
         if value_row == correct_row:
             move_element_on_same_row(
                 board,
                 value_to_order,
                 value_cell_coordinates,
-                empty_cell_coordinates,
                 correct_cell_coordinates
             )
 
@@ -123,6 +137,14 @@ def swap_cells_to_right_from_down_with_moves_from_right_left_down_right_up(board
     board.move_left()
     board.move_down()
     board.move_right()
+    board.move_right()
+    board.move_up()
+
+
+def move_element_from_last_row(board):
+    board.move_up()
+    board.move_left()
+    board.move_down()
     board.move_right()
     board.move_up()
 
@@ -266,29 +288,23 @@ def set_the_empty_cell_right_to_the_target_value(board, value_cell, empty_cell):
                 board.move_left()
                 empty_row, empty_col = board.find_target_cell(board.EMPTY_CELL, board.board)
             # '1' '0'
+    # print(board)
 
 
-def move_element_on_same_row(board, target_value, value_cell, empty_cell, correct_cell):
+def move_element_on_same_row(board, target_value, value_cell, correct_cell):
+    empty_cell = board.find_target_cell(board.EMPTY_CELL, board.board)
     set_the_empty_cell_right_to_the_target_value(board, value_cell, empty_cell)
     value_cell = board.find_target_cell(target_value, board.board)
     while not value_cell == correct_cell:
         if value_cell[1] < correct_cell[1]:
             swap_cells_to_right_from_down_with_moves_from_right_left_down_right_up(board)
-
         else:
             swap_cells_to_left_from_down_with_moves_from_right_down_left_up_right(board)
 
         value_cell = board.find_target_cell(target_value, board.board)
         empty_cell = board.find_target_cell(board.EMPTY_CELL, board.board)
         set_the_empty_cell_right_to_the_target_value(board, value_cell, empty_cell)
-
-
-def move_element_from_last_row(board):
-    board.move_up()
-    board.move_left()
-    board.move_down()
-    board.move_right()
-    board.move_up()
+        value_cell = board.find_target_cell(target_value, board.board)
 
 
 def standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(
@@ -356,7 +372,7 @@ def standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(
     value_row, value_col = value_cell_coordinates
     if value_row == correct_row:
         if value_cell_coordinates != correct_cell_coordinates:
-            move_element_on_same_row(board, value, value_cell_coordinates, empty_cell_coordinates, correct_cell_coordinates)
+            move_element_on_same_row(board, value, value_cell_coordinates, correct_cell_coordinates)
 
 
 def make_last_two_columns_moves(board, target_value, correct_cell):
@@ -381,7 +397,7 @@ def last_columns_move_for_next_value(board, target_value, correct_cell):
         empty_cell = board.find_target_cell(board.EMPTY_CELL, board.board)
 
         if next_value_row == correct_row:
-            move_element_on_same_row(board, next_value, next_value_coordinates, empty_cell, correct_cell)
+            move_element_on_same_row(board, next_value, next_value_coordinates, correct_cell)
 
         else:
             standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(
@@ -418,7 +434,7 @@ def last_columns_move_for_current_value(board, target_value, correct_cell):
 
     while target_value_coordinates != correct_cell:
         if current_target_row == correct_row:
-            move_element_on_same_row(board, target_value, target_value_coordinates, empty_cell, correct_cell)
+            move_element_on_same_row(board, target_value, target_value_coordinates, correct_cell)
         else:
             standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(board, target_value,
                                                                                  target_value_coordinates,
@@ -436,8 +452,86 @@ def last_columns_move_for_current_value(board, target_value, correct_cell):
         set_last_column_specific_case(board)
 
 
+def solve_the_last_two_rows_fo_the_puzzle(board):
+    print("Last 2 rows moves")
+    row = board.side - 2
+    col = 0
+
+    value_on_first_row = board.winning_board[row][col]
+    value_on_second_row = board.winning_board[row + 1][col]
+
+    make_last_two_rows_moves(board, value_on_second_row, (row, col))
+    if board.board[row + 1][col] == value_on_first_row:
+        last_two_rows_specific_case(board)
+    else:
+        make_last_two_rows_moves(board, value_on_first_row, (row, col + 1))
+    swap_last_two_rows_elements_to_correct_places_diff_rows_same_columns(board)
+
+    print(board)
+
+    exit()
+
+
+def swap_last_two_rows_elements_to_correct_places_diff_rows_same_columns(board):
+    board.move_down()
+    board.move_left()
+    board.move_left()
+    board.move_up()
+    board.move_right()
+
+
+def last_two_rows_specific_case(board):
+    board.move_down()
+    board.move_left()
+    board.move_up()
+    board.move_right()
+    board.move_right()
+    board.move_down()
+
+    board.move_left()
+    board.move_up()
+    board.move_left()
+    board.move_down()
+    board.move_right()
+    board.move_right()
+    board.move_up()
+    board.move_left()
+    board.move_down()
+    board.move_right()
+    board.move_up()
+
+
 def make_last_two_rows_moves(board, value_to_order, correct_cell_coordinates):
-    pass
+    value_coordinates = board.find_target_cell(value_to_order, board.board)
+    value_row, value_col = value_coordinates
+
+    empty_cell_coordinates = board.find_target_cell(board.EMPTY_CELL, board.board)
+
+    if value_col == board.side - 1:
+        move_element_from_last_column(board, value_coordinates, empty_cell_coordinates)
+        empty_cell_coordinates = board.find_target_cell(board.EMPTY_CELL, board.board)
+        value_coordinates = board.find_target_cell(value_to_order, board.board)
+
+    set_the_empty_cell_right_to_the_target_value(board, value_coordinates, empty_cell_coordinates)
+    empty_cell_coordinates = board.find_target_cell(board.EMPTY_CELL, board.board)
+    value_row, value_col = value_coordinates
+
+    if value_coordinates != correct_cell_coordinates:
+        if value_row == board.side - 1:
+            standard_cells_moves_when_the_correct_cell_is_not_down_or_in_the_end(
+                board,
+                value_to_order,
+                value_coordinates,
+                empty_cell_coordinates,
+                correct_cell_coordinates)
+        else:
+            move_element_on_same_row(
+                board,
+                value_to_order,
+                value_coordinates,
+                correct_cell_coordinates
+            )
+
 
 
 
