@@ -19,11 +19,16 @@ class Game:
         return board
 
     def ai_play(self, board):
+        """
+        The function controls the AI main steps for solving the puzzle.
+            First order all rows in the puzzle without the last two.
+            After that order the last two rows.
+        """
         while not ai_game.check_if_the_puzzle_is_solved_except_count_rows(board, 2):
             ai_game.solve_the_puzzle_without_the_last_two_rows(board)
             print(board)
         while not self.check_if_the_puzzle_is_solved(board.board):
-            ai_game.solve_the_last_two_rows_fo_the_puzzle(board)
+            ai_game.solve_the_last_two_rows_for_the_puzzle(board)
 
     def user_play(self, board):
         """
